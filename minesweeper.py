@@ -17,6 +17,10 @@ class Board:
         self.generate_bombs()
         self.make_values()
 
+    def uncover(self, x, y):
+        if (x, y) not in self.known:
+            self.known.append((x, y))
+
     def get_adj_squares(self, x, y):#doesn't loop around
         adj_squares = []
         for xmod in range(-1, 2):
@@ -34,7 +38,7 @@ class Board:
     def reveal_all(self):
         for x in range(self.width):
             for y in range(self.height):
-                self.known.append((x, y))
+                self.uncover(x, y)
 
     def generate_bombs(self):
         bcount = self.num_bombs
@@ -65,7 +69,7 @@ class Board:
         first=False
         if len(self.known)==0:
             first=True
-        self.known.append((x, y))
+        self.uncover(x, y)
 
         if ((x, y) not in self.empty) and first==False:
             return 0#0=game over
@@ -84,7 +88,7 @@ class Board:
 
         return 1#game continues
 
-    def chord_square(self, x, y):
+    def chord_square(self, x, y):#bug: currently duplicates knowns?
         #count adjacent flags
         #if as many flags as values, click all adjacent unflagged
         adj_flags = 0
@@ -94,7 +98,8 @@ class Board:
         if adj_flags == self.values[(x, y)]:
             for square in self.get_adj_squares(x, y):
                 if square not in self.flagged:
-                    self.check_square(square[0], square[1])
+                    if self.check_square(square[0], square[1]) == 0:
+                        return 0
         return 1
 
     def flag_square(self, x, y):

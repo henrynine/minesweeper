@@ -1,6 +1,10 @@
 #base minesweeper app
 import random
 
+diff = {1:(9, 9, 10),
+        2:(16, 16, 40),
+        3:(16, 30, 100)}
+
 class Board:
 
     def __init__(self, h, w, n):
@@ -53,6 +57,7 @@ class Board:
                 if (x_index, y_index) in self.empty:
                     self.empty.append((x, y))#mark original space as empty
                     self.empty.remove((x_index, y_index))#mark as bomb
+                    return 1
 
     def make_values(self):
         adj_bomb_count = 0
@@ -114,6 +119,15 @@ class Board:
             return 1
         return 0
 
+    #value - flags, for AI
+    def get_vf(self, x, y):
+        vf = self.values[(x, y)]
+        for square in self.get_adj_squares(x, y):
+            if square in self.flagged:
+                vf -= 1
+        return vf
+
+    #format for printing
     def format(self):
         rows = []
         for xindex in range(self.width):
@@ -133,5 +147,11 @@ class Board:
 
     def printboard(self):
         rows = self.format()
-        for row in rows:
-            print(row)
+        first = '___'#works up thru 99
+        ins = '|||'
+        for i in range(self.width):
+            first += str(i)
+            ins+='|'
+        print(first+'\n'+ins)
+        for i in range(len(rows)):
+            print(str(i)+'__'+rows[i])

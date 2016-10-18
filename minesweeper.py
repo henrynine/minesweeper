@@ -24,6 +24,8 @@ class Board:
     def uncover(self, x, y):
         if (x, y) not in self.known:
             self.known.append((x, y))
+        if (x, y) in self.flagged:
+            self.flagged.remove((x, y))
 
     def get_adj_squares(self, x, y):#doesn't loop around
         adj_squares = []
@@ -57,6 +59,7 @@ class Board:
                 if (x_index, y_index) in self.empty:
                     self.empty.append((x, y))#mark original space as empty
                     self.empty.remove((x_index, y_index))#mark as bomb
+                    self.make_values()
                     return 1
 
     def make_values(self):
@@ -126,6 +129,29 @@ class Board:
             if square in self.flagged:
                 vf -= 1
         return vf
+
+    #unknown-flags, for AI
+    def get_uf(self, x, y):
+        uf = 0
+        for square in self.get_adj_squares(x, y):
+            if not (square in self.flagged or square in self.known):
+                uf+=1
+        return uf
+
+    #counts flags, for AI
+    def count_flags(self, x, y):
+        fc = 0
+        for square in self.get_adj_squares(x, y):
+            if square in self.flagged:
+                fc+=1
+        return fc
+
+    def count_unknown(self, x, y):
+        uc = 0
+        for square in self.get_adj_squares(x, y):
+            if square not in self.known:
+                uc+=1
+        return uc
 
     #format for printing
     def format(self):

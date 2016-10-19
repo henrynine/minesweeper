@@ -43,7 +43,7 @@ while str(input('Play?'))=="y":
 
     click_random(board)
 
-    while not board.check_over():
+    while (board.check_over()==0):
         initial_state = board.format()
         print('clicked:')
         board.printboard()

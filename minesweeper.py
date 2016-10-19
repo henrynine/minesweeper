@@ -190,4 +190,7 @@ class Board:
             ins+='|'
         print(first+'\n'+ins)
         for i in range(len(rows)):
-            print(str(i)+'__'+rows[i])
+            insert = '__'
+            if i>9:
+                insert = '_'
+            print(str(i)+insert+rows[i])

@@ -1,7 +1,8 @@
 #base minesweeper app
 import random
 
-diff = {1:(9, 9, 10),
+diff = {0:(6, 6, 4),
+        1:(9, 9, 10),
         2:(16, 16, 40),
         3:(16, 30, 100)}
 
@@ -152,6 +153,15 @@ class Board:
             if square not in self.known:
                 uc+=1
         return uc
+
+    def check_over(self):#checks if all empty squares are clicked
+        for x in range(self.width):
+            for y in range(self.height):
+                if ((x, y) in self.empty) and ((x, y) not in self.known):
+                    return 0
+                if ((x, y) not in self.empty) and ((x, y) in self.known):
+                    return 2
+        return 1
 
     #format for printing
     def format(self):

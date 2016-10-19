@@ -158,10 +158,10 @@ class Board:
         for x in range(self.width):
             for y in range(self.height):
                 if ((x, y) in self.empty) and ((x, y) not in self.known):
-                    return 0
+                    return 0#not over
                 if ((x, y) not in self.empty) and ((x, y) in self.known):
-                    return 2
-        return 1
+                    return 2#bomb
+        return 1#won
 
     #format for printing
     def format(self):

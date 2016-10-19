@@ -56,6 +56,7 @@ while str(input('Play?'))=="y":
             print('clicking random.')
             click_random(board)
 
+    board.printboard()
 
     if board.check_over()==1:
         print("I won!")

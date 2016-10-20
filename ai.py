@@ -96,31 +96,24 @@ def new_loop():
 
         while True:
             l = basic_loop(board)
+
             while l!=0:
-                print('l: ', l)
                 l = basic_loop(board)
-            print('basic loop is stuck')
-            print('check_over: ', board.check_over())
+
             if board.check_over()!=0:
-                print('breaking')
                 break
-            print('guessing')
+
             g = guess(board)
-            print('g: ', g)
-            print('check_over: ', board.check_over())
-            if g==0:
-                print('breaking bc g==0')
-                break
+
             if board.check_over()!=0:
-                print('breaking')
                 break
+
         board.printboard()
-        print('final check_over: ', board.check_over())
-        print('empty: ', board.empty)
-        print('known: ', board.known)
+
         if board.check_over()==1:
             print("I won!")
         if board.check_over()==2:
             print("I lost.")
+
         board.reveal_all()
         board.printboard()

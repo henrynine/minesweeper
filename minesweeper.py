@@ -157,10 +157,12 @@ class Board:
     def check_over(self):#checks if all empty squares are clicked
         for x in range(self.width):
             for y in range(self.height):
-                if ((x, y) in self.empty) and ((x, y) not in self.known):
-                    return 0#not over
                 if ((x, y) not in self.empty) and ((x, y) in self.known):
                     return 2#bomb
+        for x in range(self.width):
+            for y in range(self.height):
+                if ((x, y) in self.empty) and ((x, y) not in self.known):
+                    return 0#not over
         return 1#won
 
     #format for printing

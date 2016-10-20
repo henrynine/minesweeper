@@ -33,41 +33,94 @@ def check_same(r, b):
         return 1
     return 0
 
+def basic_loop(b):
+    initial_state = b.format()
+    flag_to_vf(b)
+    vf_chord(b)
+    if b.format()==initial_state:
+        return 0#no change
+    return 1#changed
 
-while str(input('Play?'))=="y":
-    d = int(input(("Welcome to Minesweeper AI Edition!\nType '1' for beginner, '2' for intermediate, and '3' for advanced: ")))
+def guess(b):
+    return click_random(b)
 
-    board = ms.Board(ms.diff[d][0], ms.diff[d][1], ms.diff[d][2])
+def orig_loop():
+    while str(input('Play?'))=="y":
+        d = int(input(("Welcome to Minesweeper AI Edition!\nType '1' for beginner, '2' for intermediate, and '3' for advanced: ")))
 
-    board.printboard()
+        board = ms.Board(ms.diff[d][0], ms.diff[d][1], ms.diff[d][2])
 
-    click_random(board)
-
-    while (board.check_over()==0):
-        initial_state = board.format()
-        print('clicked:')
         board.printboard()
-        input('Press enter to advance.')
-        flag_to_vf(board)
-        print('flagged:')
+
+        click_random(board)
+
+        while (board.check_over()==0):
+            initial_state = board.format()
+            print('clicked:')
+            board.printboard()
+            input('Press enter to advance.')
+            flag_to_vf(board)
+            print('flagged:')
+            board.printboard()
+            vf_chord(board)
+            if check_same(initial_state, board):
+                print('clicking random.')
+                click_random(board)
+
+            #repeat flag to vf->chord vf until stuck
+            #patterns until stuck
+            #guess
         board.printboard()
-        vf_chord(board)
-        if check_same(initial_state, board):
-            print('clicking random.')
-            click_random(board)
 
-    board.printboard()
+        if board.check_over()==1:
+            print("I won!")
+        if board.check_over()==2:
+            print("I lost.")
 
-    if board.check_over()==1:
-        print("I won!")
-    if board.check_over()==2:
-        print("I lost.")
+        board.reveal_all()
+        '''if :
+            print("Game over!")
 
-    board.reveal_all()
-    '''if :
-        print("Game over!")
+        else:
+            print("You won!")'''
 
-    else:
-        print("You won!")'''
+        board.printboard()
 
-    board.printboard()
+def new_loop():
+    while str(input('Play?'))=="y":
+        d = int(input(("Welcome to Minesweeper AI Edition!\nType '1' for beginner, '2' for intermediate, and '3' for advanced: ")))
+
+        board = ms.Board(ms.diff[d][0], ms.diff[d][1], ms.diff[d][2])
+
+        click_random(board)
+
+        while True:
+            l = basic_loop(board)
+            while l!=0:
+                print('l: ', l)
+                l = basic_loop(board)
+            print('basic loop is stuck')
+            print('check_over: ', board.check_over())
+            if board.check_over()!=0:
+                print('breaking')
+                break
+            print('guessing')
+            g = guess(board)
+            print('g: ', g)
+            print('check_over: ', board.check_over())
+            if g==0:
+                print('breaking bc g==0')
+                break
+            if board.check_over()!=0:
+                print('breaking')
+                break
+        board.printboard()
+        print('final check_over: ', board.check_over())
+        print('empty: ', board.empty)
+        print('known: ', board.known)
+        if board.check_over()==1:
+            print("I won!")
+        if board.check_over()==2:
+            print("I lost.")
+        board.reveal_all()
+        board.printboard()

@@ -4,7 +4,7 @@ import random
 diff = {0:(6, 6, 4),
         1:(9, 9, 10),
         2:(16, 16, 40),
-        3:(16, 30, 100)}
+        3:(16, 30, 99)}
 
 class Board:
 
@@ -16,6 +16,7 @@ class Board:
         self.empty = []
         self.known = []
         self.flagged = []
+        self.chorded = []
         self.values = {}
 
         self.populate()
@@ -97,19 +98,22 @@ class Board:
 
         return 1#game continues
 
-    def chord_square(self, x, y):#bug: currently duplicates knowns?
+    def chord_square(self, x, y):#bug: currently duplicates knowns? 11/27: maybe still present; probably not
         #count adjacent flags
         #if as many flags as values, click all adjacent unflagged
         adj_flags = 0
-        for square in self.get_adj_squares(x, y):
-            if square in self.flagged:
-                adj_flags+=1
-        if adj_flags == self.values[(x, y)]:
+        if (x, y) in self.known:#can only chord known squares
             for square in self.get_adj_squares(x, y):
-                if square not in self.flagged:
-                    if self.check_square(square[0], square[1]) == 0:
-                        return 0
-        return 1
+                if square in self.flagged:
+                    adj_flags+=1
+            if adj_flags == self.values[(x, y)]:#only chord if the number of adjacent flags is equal to value
+                #this is the actual chording part right here
+                self.chorded.append((x, y))
+                for square in self.get_adj_squares(x, y):
+                    if square not in self.flagged:
+                        if self.check_square(square[0], square[1]) == 0:#if it's a bomb
+                            return 0#signal the game is over
+        return 1#signal the game continues
 
     def flag_square(self, x, y):
         if (x, y) not in self.known:
@@ -158,12 +162,12 @@ class Board:
         for x in range(self.width):
             for y in range(self.height):
                 if ((x, y) not in self.empty) and ((x, y) in self.known):
-                    return 2#bomb
+                    return 1#bomb
         for x in range(self.width):
             for y in range(self.height):
                 if ((x, y) in self.empty) and ((x, y) not in self.known):
                     return 0#not over
-        return 1#won
+        return 2#won
 
     #format for printing
     def format(self):

@@ -20,7 +20,7 @@ while str(input('Play?'))=="y":
         print('game_state: ', game_state)
         print('known: ', len(board.known))
         print('flagged: ', len(board.flagged))
-        if 
+        if
 
     board.reveal_all()
 
